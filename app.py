@@ -15,33 +15,30 @@ def create_student_table():
 create_student_table()
 
 @app.route('/')
-@app.route('/register-student/')
+@app.route('/register-student/', methods=['GET'])
 def register_form():
     return render_template('register.html')
 
 @app.route('/')
-@app.route('/add-student/', methods=['POST'])
+@app.route('/add-student/', methods=['GET', 'POST'])
 def add_student():
-    if request.method == "POST":
-        try:
-            fullname = request.form['name']
-            age = request.form['age']
-            username = request.form['username']
-            password = request.form['password']
-            confirm_password = request.form['confirm']
-            email = request.form['email']
+    try:
+        fullname = request.form['name']
+        age = request.form['age']
+        username = request.form['username']
+        password = request.form['password']
+        confirm_password = request.form['confirm']
+        email = request.form['email']
 
-            with sqlite3.connect('apacademy.db') as con:
-                cursor = con.cursor()
-                cursor.execute("INSERT INTO students (fullname, age, username, password, email) VALUES (?, ?, ?, ?, ?)", (fullname, age, username, password, email))
-                con.commit()
-                msg = username + "was added to the databases"
-        except Exception as e:
-            con.rollback()
-            msg = "Error occured in insert" + str(e)
+        with sqlite3.connect('apacademy.db') as con:
+            cursor = con.cursor()
+            cursor.execute("INSERT INTO students (fullname, age, username, password, email_address) VALUES (?, ?, ?, ?, ?)", (fullname, age, username, password, email))
+            con.commit()
+            msg = username + " was added to the databases"
+    except Exception as e:
+        con.rollback()
+        msg = "Error occured in insert" + str(e)
 
-        finally:
-            con.close()
-            return render_template('results.html', msg=msg)
-
-
+    finally:
+        con.close()
+    return render_template('results.html', msg=msg)
