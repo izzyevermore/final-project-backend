@@ -1,7 +1,9 @@
 import sqlite3
 from flask import Flask, render_template, request, jsonify
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 # Defining the function that opens sqlite database and creates table
 def create_student_table():
