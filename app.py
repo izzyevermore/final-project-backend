@@ -64,7 +64,9 @@ def show_students():
         return jsonify(students)
 
 
-@app.route('/login/', methods=['POST'])
+@app.route('/login/', methods=['GET', 'POST'])
+import pdb as pdb
+pdb.set_trace()
 def login():
     try:
         username = request.form['username']
@@ -80,7 +82,7 @@ def login():
         msg = "There was a problem logging in try again later " + str(e)
     finally:
         con.close()
-        return render_template('index.html', msg=msg)
+    return render_template('index.html', msg=message)
 
 
 
