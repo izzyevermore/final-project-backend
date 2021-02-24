@@ -5,6 +5,13 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
+
+def dict_factory(cursor, row):
+    d = {}
+    for idx, col in enumerate(cursor.description):
+        d[col[0]] = row[idx]
+    return d
+
 # Defining the function that opens sqlite database and creates table
 def create_student_table():
     connect = sqlite3.connect('apacademy.db')
@@ -53,6 +60,7 @@ def show_students():
     students = []
     try:
         with sqlite3.connect('apacademy.db') as connect:
+            connect.row_factory = dict_factory
             cursor = connect.cursor()
             cursor.execute("SELECT * FROM students")
             students = cursor.fetchall()
