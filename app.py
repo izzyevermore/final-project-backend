@@ -24,6 +24,14 @@ def create_student_table():
 
 create_student_table()
 
+def create_admin_table():
+    con = sqlite3.connect('apacademy.db')
+    con.execute('CREATE TABLE IF NOT EXISTS admin (adminID INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT)')
+    print("Admin table was created successfully")
+    con.close()
+
+create_admin_table()
+
 # Route for opening the registration form and rendering template
 @app.route('/')
 @app.route('/register-student/', methods=['GET'])
@@ -53,7 +61,7 @@ def add_student():
         msg = "Error occured in insert" + str(e)
     finally:
         con.close()
-    return render_template('results.html', msg=msg)
+    return jsonify(msg=msg)
 
 @app.route('/show-students/', methods=['GET'])
 def show_students():
@@ -72,8 +80,9 @@ def show_students():
         return jsonify(students)
 
 
-@app.route('/login/', methods=['GET', 'POST'])
+@app.route('/login/', methods=['GET'])
 def login():
+    msg = None
     try:
         username = request.form['username']
         password = request.form['password']
@@ -82,13 +91,13 @@ def login():
             mycursor = con.cursor()
             mycursor.execute('SELECT * FROM students WHERE username = ? and password = ?', (username, password))
             con.commit()
-            message = username + " has logged in."
+            msg = username + " has logged in."
     except Exception as e:
         con.rollback()
         msg = "There was a problem logging in try again later " + str(e)
     finally:
         con.close()
-    return render_template('index.html', msg=message)
+    return jsonify(msg=msg)
 
 
 
