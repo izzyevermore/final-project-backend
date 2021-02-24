@@ -73,8 +73,6 @@ def show_students():
 
 
 @app.route('/login/', methods=['GET', 'POST'])
-import pdb as pdb
-pdb.set_trace()
 def login():
     try:
         username = request.form['username']
