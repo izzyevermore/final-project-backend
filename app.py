@@ -1,7 +1,6 @@
 import sqlite3
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
-import pdb as pdb
 
 
 app = Flask(__name__)
@@ -37,6 +36,16 @@ def create_admin_table():
 
 
 create_admin_table()
+
+def add_admin():
+    conn = sqlite3.connect('apacademy.db')
+    conn.execute('INSERT INTO admin(username, password) VALUES(?, ?)', ('apacademy@icloud.com', 'Tutoring20'))
+    print("Admin has been created")
+    conn.close()
+
+add_admin()
+
+
 
 
 # Route for opening the registration form and rendering template
