@@ -131,7 +131,7 @@ def admin_login():
         msg = "There was an error logging in as admin" + str(e)
     finally:
         con.close()
-    return jsonify(msg=msg)
+    return jsonify(admin, msg=msg)
 
 
 
