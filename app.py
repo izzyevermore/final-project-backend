@@ -37,11 +37,16 @@ def create_admin_table():
 
 create_admin_table()
 
+
 def add_admin():
+    username = "apacademy@icloud.com"
+    password = "Tutoring20"
     conn = sqlite3.connect('apacademy.db')
-    conn.execute('INSERT INTO admin(username, password) VALUES(?, ?)', ('apacademy@icloud.com', 'Tutoring20'))
+    conn.execute('INSERT INTO admin (username, password) VALUES(?, ?)', (username, password))
+    conn.commit()
     print("Admin has been created")
     conn.close()
+
 
 add_admin()
 
@@ -118,20 +123,22 @@ def login():
         con.close()
     return jsonify(data, msg=msg)
 
-@app.route('/admin-login/', methods=['GET'])
-def admin_login():
+
+@app.route('/show-admin/', methods=['GET'])
+def show_admin():
+    admin = {'username': "apacademy@icloud.com",'password': "Tutoring20"}
     try:
-        with sqlite3.connect('apacademy.db') as con:
-            mycursor = con.cursor()
-            mycursor.execute('SELECT * FROM admin')
-            admin = mycursor.fetchone()
-            msg = "Admin has been logged in successfully"
+        with sqlite3.connect('apacademy.db') as connect:
+            connect.row_factory = dict_factory
+            cursor = connect.cursor()
+            cursor.execute("SELECT * FROM admin")
+            admin = cursor.fetchone()
     except Exception as e:
-        con.rollback()
-        msg = "There was an error logging in as admin" + str(e)
+        connect.rollback()
+        print("There was an error fetching results from the database: " + str(e))
     finally:
-        con.close()
-    return jsonify(admin, msg=msg)
+        connect.close()
+    return jsonify(admin)
 
 
 
