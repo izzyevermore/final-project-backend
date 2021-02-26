@@ -118,6 +118,24 @@ def login():
         con.close()
     return jsonify(data, msg=msg)
 
+@app.route('/admin-login/', methods=['GET'])
+def admin_login():
+    try:
+        with sqlite3.connect('apacademy.db') as con:
+            mycursor = con.cursor()
+            mycursor.execute('SELECT * FROM admin')
+            admin = mycursor.fetchone()
+            msg = "Admin has been logged in successfully"
+    except Exception as e:
+        con.rollback()
+        msg = "There was an error logging in as admin" + str(e)
+    finally:
+        con.close()
+    return jsonify(msg=msg)
+
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
