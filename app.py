@@ -131,7 +131,7 @@ def show_admin():
         with sqlite3.connect('apacademy.db') as connect:
             connect.row_factory = dict_factory
             cursor = connect.cursor()
-            cursor.execute("SELECT * FROM admin WHERE username = ? and password=?")
+            cursor.execute("SELECT * FROM admin WHERE username = ? and password=?", admin)
             admin = cursor.fetchone()
     except Exception as e:
         connect.rollback()
