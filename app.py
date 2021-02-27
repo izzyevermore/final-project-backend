@@ -126,12 +126,12 @@ def login():
 
 @app.route('/show-admin/', methods=['GET'])
 def show_admin():
-    admin = {'username': "apacademy@icloud.com",'password': "Tutoring20"}
     try:
         with sqlite3.connect('apacademy.db') as connect:
             connect.row_factory = dict_factory
             cursor = connect.cursor()
-            cursor.execute("SELECT * FROM admin WHERE username = ? and password=?", admin)
+            cursor.execute("SELECT * FROM admin WHERE username = ? and password=?", ("apacademy@icloud.com", "Tutoring20"))
+            import pdb;pdb.set_trace()
             admin = cursor.fetchone()
     except Exception as e:
         connect.rollback()
