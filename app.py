@@ -131,7 +131,6 @@ def show_admin():
             connect.row_factory = dict_factory
             cursor = connect.cursor()
             cursor.execute("SELECT * FROM admin WHERE username = ? and password=?", ("apacademy@icloud.com", "Tutoring20"))
-            import pdb;pdb.set_trace()
             admin = cursor.fetchone()
     except Exception as e:
         connect.rollback()
