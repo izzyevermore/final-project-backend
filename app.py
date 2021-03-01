@@ -28,31 +28,6 @@ def create_student_table():
 create_student_table()
 
 
-def create_admin_table():
-    con = sqlite3.connect('apacademy.db')
-    con.execute('CREATE TABLE IF NOT EXISTS admin (adminID INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT)')
-    print("Admin table was created successfully")
-    con.close()
-
-
-create_admin_table()
-
-
-def add_admin():
-    username = "apacademy@icloud.com"
-    password = "Tutoring20"
-    conn = sqlite3.connect('apacademy.db')
-    conn.execute('INSERT INTO admin (username, password) VALUES(?, ?)', (username, password))
-    conn.commit()
-    print("Admin has been created")
-    conn.close()
-
-
-add_admin()
-
-
-
-
 # Route for opening the registration form and rendering template
 @app.route('/')
 @app.route('/register-student/', methods=['GET'])
@@ -122,25 +97,6 @@ def login():
     finally:
         con.close()
     return jsonify(data, msg=msg)
-
-
-@app.route('/show-admin/', methods=['GET'])
-def show_admin():
-    try:
-        with sqlite3.connect('apacademy.db') as connect:
-            connect.row_factory = dict_factory
-            cursor = connect.cursor()
-            cursor.execute("SELECT * FROM admin WHERE username = ? and password=?", ("apacademy@icloud.com", "Tutoring20"))
-            admin = cursor.fetchone()
-    except Exception as e:
-        connect.rollback()
-        print("There was an error fetching results from the database: " + str(e))
-    finally:
-        connect.close()
-    return jsonify(admin)
-
-
-
 
 
 if __name__ == '__main__':
