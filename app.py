@@ -98,6 +98,9 @@ def login():
         con.close()
     return jsonify(data, msg=msg)
 
+@app.route('/send-email/')
+def send_email():
+
 
 if __name__ == '__main__':
     app.run(debug=True)
