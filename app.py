@@ -78,31 +78,6 @@ def show_students():
         return jsonify(students)
 
 
-# @app.route('/login/', methods=['GET'])
-# def login():
-#     msg = None
-#     try:
-#         username = request.form['username']
-#         password = request.form['password']
-#
-#         with sqlite3.connect('apacademy.db') as con:
-#             con.row_factory = dict_factory
-#             mycursor = con.cursor()
-#             mycursor.execute('SELECT * FROM students WHERE username = ? and password = ?', (username, password))
-#             data = mycursor.fetchone()
-#             con.commit()
-#             msg = username + " has logged in."
-#     except Exception as e:
-#         con.rollback()
-#         msg = "There was a problem logging in try again later " + str(e)
-#     finally:
-#         con.close()
-#     return jsonify(data, msg=msg)
-
-# @app.route('/send-email/')
-# def send_email():
-
-
 if __name__ == '__main__':
     app.run(debug=True)
 
