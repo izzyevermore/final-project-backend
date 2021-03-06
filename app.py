@@ -1,6 +1,7 @@
 import sqlite3
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
+from smtplib import SMTP
 
 
 app = Flask(__name__)
@@ -76,6 +77,37 @@ def show_students():
     finally:
         connect.close()
         return jsonify(students)
+
+@app.route('/')
+@app.route('/send-email/', methods=['GET'])
+def email_sender():
+    return render_template('contact.html')
+
+
+@app.route('/email-sender/')
+def email_response():
+    firstname = request.form['firstname']
+    lastname = request.form['lastname']
+    age = request.form['grade']
+    email = request.form['email']
+    online = request.form['online']
+    face = request.form['face-to-face']
+    current_mark = request.form['current-mark']
+    goal = request.form['goal']
+
+    server = SMTP("smtp@gmail.com", 587)
+
+    try:
+        sender_email = email
+        receiver_email = "apacademy@icloud.com"
+        password = "Tutoring20"
+        server.starttls()
+
+
+
+
+
+
 
 
 if __name__ == '__main__':
