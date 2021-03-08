@@ -1,7 +1,8 @@
 import sqlite3
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
-from smtplib import SMTP
+import smtplib
+from email.mime.text import MIMEText
 
 
 app = Flask(__name__)
@@ -84,28 +85,59 @@ def email_sender():
     return render_template('contact.html')
 
 
-@app.route('/email-sender/')
-def email_response():
-    firstname = request.form['firstname']
-    lastname = request.form['lastname']
-    age = request.form['grade']
-    email = request.form['email']
-    online = request.form['online']
-    face = request.form['face-to-face']
-    current_mark = request.form['current-mark']
-    goal = request.form['goal']
-
-    server = SMTP("smtp@gmail.com", 587)
-
+@app.route('/send-email/', methods=["POST", "GET"])
+def send_email():
     try:
+        email = "izzyevermore123@gmail.com"
+        email_2 = request.form['email']
+        message = "Thank you for your response!! AP Academy will get back to you shortly regarding the scheduling of your lessons"
+
+        server = smtplib.SMTP('smtp.gmail.com', 587)
         sender_email = email
-        receiver_email = "apacademy@icloud.com"
-        password = "Tutoring20"
+        receiver_email = email_2
+        password = "callmedorg420"
+
         server.starttls()
+        server.login(sender_email, password)
+        server.sendmail(sender_email, receiver_email, message)
+        server.quit()
+    except smtplib.SMTPException as e:
+        return "Something wrong happened: " + str(e)
+    return render_template('email-success.html', email=sender_email)
 
 
+@app.route('/')
+@app.route('/delete-student/<int:student_id>/', methods=["GET"])
+def delete_student(student_id):
+    msg = None
+    try:
+        with sqlite3.connect('apacademy.db') as con:
+            cur = con.cursor()
+            cur.execute("DELETE FROM students WHERE userid = " + str(student_id))
+            con.commit()
+            msg = "A record was deleted successfully from the database."
+    except Exception as e:
+        con.rollback()
+        msg = "Error occurred when deleting a student in the database: " + str(e)
+    finally:
+        con.close()
+        return jsonify(msg=msg)
 
 
+@app.route('/display-students/', methods=['GET'])
+def display():
+    records = []
+    try:
+        with sqlite3.connect('apacademy.db') as con:
+            cur = con.cursor()
+            cur.execute("SELECT * FROM students")
+            records = cur.fetchall()
+    except Exception as e:
+        con.rollback()
+        print("There was an error fetching resuls from database: "+ str(e))
+    finally:
+        con.close()
+        return render_template('students.html', records=records)
 
 
 
