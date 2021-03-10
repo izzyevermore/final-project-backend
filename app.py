@@ -113,7 +113,7 @@ def delete_student(student_id):
     try:
         with sqlite3.connect('apacademy.db') as con:
             cur = con.cursor()
-            cur.execute("DELETE FROM students WHERE userid = " + str(student_id))
+            cur.execute("DELETE FROM students WHERE username = ? AND password = ?" + str(student_id))
             con.commit()
             msg = "A record was deleted successfully from the database."
     except Exception as e:
