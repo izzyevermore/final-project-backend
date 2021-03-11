@@ -7,7 +7,7 @@ import smtplib
 app = Flask(__name__)
 CORS(app)
 
-
+# Returns the data in a dict
 def dict_factory(cursor, row):
     d = {}
     for idx, col in enumerate(cursor.description):
@@ -15,8 +15,6 @@ def dict_factory(cursor, row):
     return d
 
 # Defining the function that opens sqlite database and creates table
-
-
 def create_student_table():
     connect = sqlite3.connect('apacademy.db')
     print("Databases has opened")
@@ -26,17 +24,10 @@ def create_student_table():
     connect.close()
 
 
-create_student_table()
-
-
-# Route for opening the registration form and rendering template
-@app.route('/')
-@app.route('/register-student/', methods=['GET'])
-def register_form():
-    return render_template('register.html')
-
-
+create_student_table
 # Fetching form info and adding user to database
+
+
 @app.route('/')
 @app.route('/add-student/', methods=['POST'])
 def add_student():
@@ -61,7 +52,7 @@ def add_student():
         con.close()
     return jsonify(msg=msg)
 
-
+# This function is to display the users who registered
 @app.route('/show-students/', methods=['GET'])
 def show_students():
     students = []
@@ -78,10 +69,7 @@ def show_students():
         connect.close()
         return jsonify(students)
 
-@app.route('/')
-@app.route('/send-email/', methods=['GET'])
-def email_sender():
-    return render_template('contact.html')
+# This function is for an response to the user for the contact form
 
 
 @app.route('/send-email/', methods=["POST", "GET"])
@@ -102,16 +90,18 @@ def send_email():
         server.quit()
     except smtplib.SMTPException as e:
         return "Something wrong happened: " + str(e)
-    return render_template('email-success.html', email=sender_email)
+    return jsonify(email=sender_email)
 
+
+#This is the function for deleteing a user off the database
 
 @app.route('/')
-@app.route('/delete-student/', methods=["GET"])
+@app.route('/delete-student/', methods=["POST"])
 def delete_student():
     msg = None
+    username = request.form['username']
+    password = request.form['password']
     try:
-        username = request.form['username']
-        password = request.form['password']
         with sqlite3.connect('apacademy.db') as con:
             cur = con.cursor()
             cur.execute("DELETE FROM students WHERE username = ? AND password = ?", (username, password))
@@ -124,7 +114,7 @@ def delete_student():
         con.close()
         return jsonify(msg=msg)
 
-
+#Fetches results from the database and allows you to delete
 @app.route('/display-students/', methods=['GET'])
 def display():
     records = []
@@ -138,7 +128,7 @@ def display():
         print("There was an error fetching resuls from database: "+ str(e))
     finally:
         con.close()
-        return render_template('students.html', records=records)
+        return jsonify(records=records)
 
 
 
