@@ -106,13 +106,15 @@ def send_email():
 
 
 @app.route('/')
-@app.route('/delete-student/<int:student_id>/', methods=["GET"])
-def delete_student(student_id):
+@app.route('/delete-student/', methods=["GET"])
+def delete_student():
     msg = None
     try:
+        username = request.form['username']
+        password = request.form['password']
         with sqlite3.connect('apacademy.db') as con:
             cur = con.cursor()
-            cur.execute("DELETE FROM students WHERE username = ? AND password = ?" + str(student_id))
+            cur.execute("DELETE FROM students WHERE username = ? AND password = ?", (username, password))
             con.commit()
             msg = "A record was deleted successfully from the database."
     except Exception as e:
